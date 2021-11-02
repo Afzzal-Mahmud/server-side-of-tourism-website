@@ -14,15 +14,19 @@ app.use(express.json())
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@node-express-crud.gezbh.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-app.get('/',(req,res) =>{
-    res.send('welcome to the server side')
-})
 
 async function run(){
     try{
+        /* home page of the server */
+        app.get('/',(req,res) =>{
+            res.send('welcome to the server side')
+        })
+
         await client.connect();
         const database = client.db("adventureTurisom");
         const offersCollection = database.collection("offerCollectionList")
+        /* add a colection what user order */
+        const orderCollection = database.collection("orderCollectionList")
 
         /* sending offerData to server */
         app.post('/offers',async (req,res) =>{
@@ -39,6 +43,20 @@ async function run(){
             const allOffers = await cursor.toArray()
             res.send(allOffers)
         })
+
+        /* add order collection to database */
+        app.post('/order',async (req,res) =>{
+            const order = req.body;
+            console.log(orderCollection)
+            console.log('hitting the order',order)
+            const result = await orderCollection.insertOne(order)
+            res.send(result)
+        })
+        /* getting allUser order to the database */
+        // app.get('/userorder'async (req,res) =>{
+        //     const orderCursor = orderCollection.find({})
+
+        // })
         console.log('connecting to database')
     }
     finally{
