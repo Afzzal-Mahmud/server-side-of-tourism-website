@@ -28,6 +28,9 @@ async function run(){
         /* add a colection what user order */
         const orderCollection = database.collection("orderCollectionList")
 
+        /* getting room data to databse */
+        const roomCollection = database.collection("hotelRooms")
+
         /* sending offerData to server */
         app.post('/offers',async (req,res) =>{
             const offers = req.body
@@ -52,11 +55,12 @@ async function run(){
             const result = await orderCollection.insertOne(order)
             res.send(result)
         })
-        /* getting allUser order to the database */
-        // app.get('/userorder'async (req,res) =>{
-        //     const orderCursor = orderCollection.find({})
-
-        // })
+        /* getting roomData to the database */
+        app.get('/userorder',async (req,res) =>{
+            const cursor = roomCollection.find({})
+            const allRooms = await cursor.toArray()
+            res.send(allRooms)
+        })
         console.log('connecting to database')
     }
     finally{
