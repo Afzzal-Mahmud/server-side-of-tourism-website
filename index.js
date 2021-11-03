@@ -73,6 +73,13 @@ async function run(){
             console.log(result)
             res.json(result);
         })
+        /* delete all order to shipping components */
+        app.delete('/deleteall', async (req, res) => {
+            const query = { detail: "order" };
+            const result = await orderCollection.deleteMany(query);
+            console.log(result)
+            res.json(result);
+        })
         
         console.log('connecting to database')
     }
