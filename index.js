@@ -2,10 +2,9 @@ const { MongoClient } = require('mongodb')
 /* sequre password by dotenv package */
 require('dotenv').config()
 
-const ObjectId = require('mongodb').ObjectId
 const express = require('express')
 const app = express()
-const port = 5000
+const port =process.env.PORT || 5000
 /* use middlewere */
 const cors = require('cors')
 app.use(cors())
@@ -17,17 +16,13 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 async function run(){
     try{
-        /* home page of the server */
-        app.get('/',(req,res) =>{
-            res.send('welcome to the server side')
-        })
-
+        
         await client.connect();
         const database = client.db("adventureTurisom");
         const offersCollection = database.collection("offerCollectionList")
         /* add a colection what user order */
         const orderCollection = database.collection("orderCollectionList")
-
+        
         /* getting room data to databse */
         const roomCollection = database.collection("hotelRooms")
 
@@ -36,7 +31,6 @@ async function run(){
             const offers = req.body
             console.log('hitting the post',offers)
             const result = await offersCollection.insertOne(offers)
-            console.log(result)
             res.json(result)
         })
 
@@ -46,13 +40,13 @@ async function run(){
             const allOffers = await cursor.toArray()
             res.json(allOffers)
         })
-
+        
         /* add offersOrder collection to database */
         app.post('/order',async (req,res) =>{
             const order = req.body;
             console.log('hitting the order',order)
             const result = await orderCollection.insertOne(order)
-            res.send(result)
+            res.json(result)
         })
 
         /* recive offers from orderCollection to database */
@@ -70,6 +64,16 @@ async function run(){
             res.send(allRooms)
         })
 
+        // deleting order data
+        app.delete('/deleteorder/:key', async (req, res) => {
+            const id = req.params.key;
+            console.log(id)
+            const query = { key: id };
+            const result = await orderCollection.deleteOne(query);
+            console.log(result)
+            res.send(result);
+        })
+        
         console.log('connecting to database')
     }
     finally{
@@ -78,6 +82,10 @@ async function run(){
 }
 run().catch(console.dir)
 
+/* home page of the server */
+app.get('/',(req,res) =>{
+    res.send('welcome to the server side')
+})
 app.listen(port,() =>{
     console.log('listening to the port',port)
 })
