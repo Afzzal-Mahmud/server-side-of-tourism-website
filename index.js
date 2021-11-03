@@ -66,12 +66,12 @@ async function run(){
 
         // deleting order data
         app.delete('/deleteorder/:key', async (req, res) => {
-            const id = req.params.key;
-            console.log(id)
-            const query = { key: id };
+            const key = req.params.key;
+            console.log(key)
+            const query = { key: key };
             const result = await orderCollection.deleteOne(query);
             console.log(result)
-            res.send(result);
+            res.json(result);
         })
         
         console.log('connecting to database')
