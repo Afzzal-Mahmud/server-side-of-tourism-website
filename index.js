@@ -56,7 +56,7 @@ async function run(){
             console.log(result,'from email')
             res.send(result)
         })
-
+        /* this line is test command for heroku */
         /* getting roomData to the database */
         app.get('/userorder',async (req,res) =>{
             const cursor = roomCollection.find({})
