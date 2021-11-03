@@ -74,8 +74,9 @@ async function run(){
             res.json(result);
         })
         /* delete all order to shipping components */
-        app.delete('/deleteall', async (req, res) => {
-            const query = { detail: "order" };
+        app.delete('/deleteall/:currentUserEmail', async (req, res) => {
+            const currentEmail = req.params.currentUserEmail
+            const query = { email : currentEmail };
             const result = await orderCollection.deleteMany(query);
             console.log(result)
             res.json(result);
