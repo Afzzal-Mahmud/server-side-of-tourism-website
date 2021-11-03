@@ -2,10 +2,10 @@ const { MongoClient } = require('mongodb')
 /* sequre password by dotenv package */
 require('dotenv').config()
 
+const ObjectId = require('mongodb').ObjectId
 const express = require('express')
 const app = express()
 const port = 5000
-
 /* use middlewere */
 const cors = require('cors')
 app.use(cors())
@@ -44,23 +44,32 @@ async function run(){
         app.get('/alloffers',async(req,res) =>{
             const cursor = offersCollection.find({})
             const allOffers = await cursor.toArray()
-            res.send(allOffers)
+            res.json(allOffers)
         })
 
-        /* add order collection to database */
+        /* add offersOrder collection to database */
         app.post('/order',async (req,res) =>{
             const order = req.body;
-            console.log(orderCollection)
             console.log('hitting the order',order)
             const result = await orderCollection.insertOne(order)
             res.send(result)
         })
+
+        /* recive offers from orderCollection to database */
+        app.get('/useroffer/:email', async(req,res) =>{
+            const email = req.params.email;
+            const result = await orderCollection.find({email}).toArray()
+            console.log(result,'from email')
+            res.send(result)
+        })
+
         /* getting roomData to the database */
         app.get('/userorder',async (req,res) =>{
             const cursor = roomCollection.find({})
             const allRooms = await cursor.toArray()
             res.send(allRooms)
         })
+
         console.log('connecting to database')
     }
     finally{
