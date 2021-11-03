@@ -93,6 +93,10 @@ run().catch(console.dir)
 app.get('/',(req,res) =>{
     res.send('welcome to the server side')
 })
+app.get('/test',(req,res) =>{
+    res.send('text command')
+})
+
 app.listen(port,() =>{
     console.log('listening to the port',port)
 })
